@@ -302,6 +302,7 @@ class Dbaas(object):
         from troveclient.v1 import backups
         from troveclient.v1 import databases
         from troveclient.v1 import datastores
+        from troveclient.v1 import dblogs
         from troveclient.v1 import diagnostics
         from troveclient.v1 import flavors
         from troveclient.v1 import hosts
@@ -323,6 +324,7 @@ class Dbaas(object):
                                  region_name=region_name)
         self.versions = versions.Versions(self)
         self.databases = databases.Databases(self)
+        self.dblogs = dblogs.DBLogs(self)
         self.flavors = flavors.Flavors(self)
         self.instances = instances.Instances(self)
         self.limits = limits.Limits(self)

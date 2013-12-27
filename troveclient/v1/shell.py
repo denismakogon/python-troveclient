@@ -276,8 +276,35 @@ def do_backup_create(cs, args):
                                description=args.description)
     _print_instance(backup)
 
+# DBLogs related section
+
+
+@utils.arg('name', metavar='<name>', help='Name of the specific log file.')
+@utils.arg('instance', metavar='<instance>', help='UUID of the instance.')
+@utils.service_type('database')
+def do_dblog_create(cs, args):
+
+    dblog = cs.dblogs.create(args.name, args.instance)
+    _print_instance(dblog)
+
+
+@utils.service_type('database')
+def do_dblog_list(cs, args):
+
+    dblogs = cs.dblogs.list()
+    utils.print_list(dblogs, ['datastore_name', 'datastore_manager', 'files'])
+
+
+@utils.arg('datastore', metavar='<datastore>',
+           help='ID of the datastore.')
+@utils.service_type('database')
+def do_dblog_show(cs, args):
+
+    dblog = cs.dblogs.get(args.datastore)
+    _print_instance(dblog)
 
 # Database related actions
+
 
 @utils.arg('instance', metavar='<instance>', help='UUID of the instance.')
 @utils.arg('name', metavar='<name>', help='Name of the backup.')
