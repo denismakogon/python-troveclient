@@ -19,6 +19,7 @@ from troveclient.v1 import backups
 from troveclient.v1 import configurations
 from troveclient.v1 import databases
 from troveclient.v1 import datastores
+from troveclient.v1 import dblogs
 from troveclient.v1 import flavors
 from troveclient.v1 import instances
 from troveclient.v1 import limits
@@ -56,6 +57,7 @@ class Client(object):
         self.flavors = flavors.Flavors(self)
         self.users = users.Users(self)
         self.databases = databases.Databases(self)
+        self.dblogs = dblogs.DBLogs(self)
         self.backups = backups.Backups(self)
         self.instances = instances.Instances(self)
         self.limits = limits.Limits(self)

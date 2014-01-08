@@ -379,6 +379,16 @@ class ConfigurationsCommands(common.AuthedCommandsBase):
         self._pretty_print(self.dbaas.configurations.delete, self.id)
 
 
+class DBLogCommands(common.AuthedCommandsBase):
+    """Command to manage instance log files"""
+    params = ['name', 'instance']
+
+    def create(self):
+        self._require('name', 'instance')
+        self._pretty_print(self.dbaas.dblogs.create, self.name,
+                           self.instance)
+
+
 class SecurityGroupCommands(common.AuthedCommandsBase):
     """Commands to list and show Security Groups For an Instance and """
     """create and delete security group rules for them. """
@@ -422,6 +432,7 @@ COMMANDS = {
     'limit': LimitsCommands,
     'backup': BackupsCommands,
     'configuration': ConfigurationsCommands,
+    'dblog': DBLogCommands,
     'user': UserCommands,
     'root': RootCommands,
     'version': VersionCommands,

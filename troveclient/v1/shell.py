@@ -338,8 +338,37 @@ def do_backup_create(cs, args):
                                parent_id=args.parent)
     _print_instance(backup)
 
+# DBLogs related section
+
+
+@utils.arg('name', metavar='<filename>', help='Name of the specific log file.')
+@utils.arg('instance', metavar='<instance>', help='UUID of the instance.')
+@utils.service_type('database')
+def do_dblog_create(cs, args):
+    """Copies a database logfile."""
+    dblog = cs.dblogs.create(args.name, args.instance)
+    _print_instance(dblog)
+
+
+@utils.service_type('database')
+def do_dblog_list(cs, args):
+    """Lists all available logfile types."""
+    dblogs = cs.dblogs.list()
+    utils.print_list(dblogs, [
+        'datastore_version_manager', 'datastore_log_files'
+    ])
+
+
+@utils.arg('datastore_version', metavar='<datastore_version>',
+           help='ID of the datastore_version.')
+@utils.service_type('database')
+def do_dblog_show(cs, args):
+    """Shows all available logfile types per datastore version."""
+    dblog = cs.dblogs.get(args.datastore_version)
+    _print_instance(dblog)
 
 # Database related actions
+
 
 @utils.arg('instance', metavar='<instance>', help='UUID of the instance.')
 @utils.arg('name', metavar='<name>', help='Name of the database.')
