@@ -379,6 +379,16 @@ class ConfigurationsCommands(common.AuthedCommandsBase):
         self._pretty_print(self.dbaas.configurations.delete, self.id)
 
 
+class RecoveryCommans(common.AuthedCommandsBase):
+
+    params = ['instance', 'backup']
+
+    def recover(self):
+        self._require('instance', 'backup')
+        self._pretty_print(self.dbaas.dblogs.create,
+                           self.instance, self.backup)
+
+
 class SecurityGroupCommands(common.AuthedCommandsBase):
     """Commands to list and show Security Groups For an Instance and """
     """create and delete security group rules for them. """
@@ -426,6 +436,7 @@ COMMANDS = {
     'root': RootCommands,
     'version': VersionCommands,
     'secgroup': SecurityGroupCommands,
+    'recover': RecoveryCommans,
 }
 
 

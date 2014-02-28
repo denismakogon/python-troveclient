@@ -346,8 +346,8 @@ class Dbaas(object):
         self.diagnostics = diagnostics.DiagnosticsInterrogator(self)
         self.hwinfo = diagnostics.HwInfoInterrogator(self)
         self.configurations = configurations.Configurations(self)
-        config_parameters = configurations.ConfigurationParameters(self)
-        self.configuration_parameters = config_parameters
+        self.configuration_parameters = (configurations.
+                                         ConfigurationParameters(self))
 
         class Mgmt(object):
             def __init__(self, dbaas):

@@ -272,6 +272,30 @@ def do_restart(cs, args):
     cs.instances.restart(args.instance)
 
 
+@utils.arg('instance',
+           metavar='<instance>',
+           type=str,
+           help='UUID of the instance')
+@utils.arg('backup',
+           metavar='<backup>',
+           type=str,
+           help='UUID of the instance')
+@utils.service_type('database')
+def do_recover(cs, args):
+    """Point-In-Time instance recovery."""
+    recover = cs.instances.recover(
+        args.instance, args.backup)
+
+    recover._info['id'] = recover.id
+    recover._info['name'] = recover.name
+    recover._info['status'] = recover.status
+    recover._info['datastore'] = recover.datastore['type']
+    recover._info['recovered_from_backup'] = recover.recovered_from_backup
+    recover._info['point_in_time'] = recover.point_in_time
+
+    _print_instance(recover)
+
+
 # Backup related commands
 
 @utils.arg('backup', metavar='<backup>', help='ID of the backup.')

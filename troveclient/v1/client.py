@@ -65,8 +65,8 @@ class Client(object):
         self.datastores = datastores.Datastores(self)
         self.datastore_versions = datastores.DatastoreVersions(self)
         self.configurations = configurations.Configurations(self)
-        config_parameters = configurations.ConfigurationParameters(self)
-        self.configuration_parameters = config_parameters
+        self.configuration_parameters = (configurations.
+                                         ConfigurationParameters(self))
 
         #self.hosts = Hosts(self)
         #self.quota = Quotas(self)

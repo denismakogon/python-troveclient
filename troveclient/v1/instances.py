@@ -175,6 +175,21 @@ class Instances(base.ManagerWithFind):
         return self._get("/instances/%s/configuration" % base.getid(instance),
                          "instance")
 
+    def recover(self, instance, backup):
+        """
+        Recovers the given instance from given backup.
+        """
+        req_body = {
+            'recovery': {
+                'backup': backup,
+            }
+        }
+        response_key = "recovery"
+        url = "/instances/%s/recovery" % base.getid(instance)
+        resp, body = self.api.client.post(url, body=req_body)
+        common.check_for_exceptions(resp, body, url)
+        return self.resource_class(self, body[response_key])
+
 
 Instances.resize_flavor = Instances.resize_instance
 
