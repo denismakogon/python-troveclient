@@ -100,14 +100,10 @@ class SecGroupRuleTest(testtools.TestCase):
         self.security_group_rules._create = mock.Mock(
             side_effect=side_effect_func
         )
-        p, b, i = self.security_group_rules.create(1, "tcp",
-                                                   80, 80, "0.0.0.0//0")
+        p, b, i = self.security_group_rules.create(1, "0.0.0.0//0")
         self.assertEqual("/security-group-rules", p)
         self.assertEqual("security_group_rule", i)
         self.assertEqual(1, b["security_group_rule"]["group_id"])
-        self.assertEqual("tcp", b["security_group_rule"]["protocol"])
-        self.assertEqual(80, b["security_group_rule"]["from_port"])
-        self.assertEqual(80, b["security_group_rule"]["to_port"])
         self.assertEqual("0.0.0.0//0", b["security_group_rule"]["cidr"])
 
     def test_delete(self):

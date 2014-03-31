@@ -74,19 +74,16 @@ class SecurityGroupRules(base.ManagerWithFind):
     """
     resource_class = SecurityGroupRule
 
-    def create(self, group_id, protocol, from_port, to_port, cidr):
+    def create(self, group_id, cidr):
         """
         Create a new security group rule.
         """
         body = {"security_group_rule": {
             "group_id": group_id,
-            "protocol": protocol,
-            "from_port": from_port,
-            "to_port": to_port,
             "cidr": cidr
         }}
         return self._create("/security-group-rules", body,
-                            "security_group_rule")
+                            "security_group_rule", return_raw=True)
 
     def delete(self, security_group_rule):
         """

@@ -385,9 +385,6 @@ class SecurityGroupCommands(common.AuthedCommandsBase):
     params = [
         'id',
         'secgroup_id',
-        'protocol',
-        'from_port',
-        'to_port',
         'cidr'
     ]
 
@@ -402,11 +399,9 @@ class SecurityGroupCommands(common.AuthedCommandsBase):
 
     def add_rule(self):
         """Add a security group rule"""
-        self._require('secgroup_id', 'protocol',
-                      'from_port', 'to_port', 'cidr')
-        self.dbaas.security_group_rules.create(self.secgroup_id, self.protocol,
-                                               self.from_port, self.to_port,
-                                               self.cidr)
+        self._require('secgroup_id', 'cidr')
+        self.dbaas.security_group_rules.create(
+            self.secgroup_id, self.cidr)
 
     def delete_rule(self):
         """Delete a security group rule"""
