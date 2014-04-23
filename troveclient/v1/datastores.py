@@ -15,6 +15,7 @@
 #    under the License.
 
 from troveclient import base
+from troveclient.openstack.common import strutils
 
 
 class Datastore(base.Resource):
@@ -51,6 +52,31 @@ class Datastores(base.ManagerWithFind):
         return self._get("/datastores/%s" % base.getid(datastore),
                          "datastore")
 
+    def create(self, name):
+        """
+        Create a new datastore.
+
+        :rtype: :class:`Datastore`
+        """
+        body = {"datastore": {
+            "name": name
+        }}
+        return self._create("/mgmt/datastores", body, "datastore")
+
+    def update(self, id, name, datastore_version):
+        """
+        Update a datastore.
+
+        :rtype: :class:`Datastore`
+        """
+        body = {"datastore": {}}
+        if name:
+            body["datastore"]["name"] = name
+        if datastore_version is not None:
+            body["datastore"]["datastore_version"] = datastore_version
+        response_body = self._edit("/mgmt/datastores/%s" % id, body)
+        return self.resource_class(self, response_body["datastore"])
+
 
 class DatastoreVersions(base.ManagerWithFind):
     """Manage :class:`DatastoreVersion` resources."""
@@ -84,3 +110,48 @@ class DatastoreVersions(base.ManagerWithFind):
         return self._get("/datastores/versions/%s" %
                          base.getid(datastore_version),
                          "version")
+
+    def create(self, datastore, name, manager, image_id, packages, active):
+        """
+        Create a new datastore version.
+
+        :rtype: :class:`DatastoreVersion`
+        """
+        body = {"version": {
+            "name": name,
+            "manager": manager,
+            "image_id": image_id
+        }}
+        if packages is not None:
+            body["version"]["packages"] = packages
+        if active is not None:
+            active = strutils.bool_from_string(active, strict=True)
+            body["version"]["active"] = active
+        return self._create("/mgmt/datastores/%s/versions" % datastore, body,
+                            "version")
+
+    def update(self, version, datastore, name, manager, image_id, packages,
+               active):
+        """
+        Update a datastore version.
+
+        :rtype: :class:`DatastoreVersion`
+        """
+        body = {"version": {}}
+        if name:
+            body["version"]["name"] = name
+        if manager:
+            body["version"]["manager"] = manager
+        if image_id:
+            body["version"]["image_id"] = image_id
+        if packages is not None:
+            body["version"]["packages"] = packages
+        if active is not None:
+            active = strutils.bool_from_string(active, strict=True)
+            body["version"]["active"] = active
+        if datastore:
+            url = "/mgmt/datastores/%s/versions/%s" % (datastore, version)
+        else:
+            url = "/mgmt/datastores/versions/%s" % version
+        response_body = self._edit(url, body)
+        return self.resource_class(self, response_body["version"])

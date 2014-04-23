@@ -85,6 +85,27 @@ class DatastoresTest(testtools.TestCase):
                           'datastore'),
                          self.datastores.get(1))
 
+    def test_create(self):
+        def side_effect_func(path, body, inst):
+            return path, body, inst
+
+        self.datastores._create = mock.Mock(side_effect=side_effect_func)
+        self.assertEqual(('/mgmt/datastores',
+                          {"datastore": {"name": "test_ds"}},
+                          'datastore'),
+                         self.datastores.create("test_ds"))
+
+    def test_update(self):
+        def side_effect_func(path, body):
+            return body
+
+        body = {"datastore": {"name": "new_name",
+                              "default_version": "version1"}}
+        self.datastores._update = mock.Mock(side_effect=side_effect_func)
+        self.datastores.resource_class = mock.Mock(return_value=body)
+        self.assertEqual(body, self.datastores.update("test_ds", "new_name",
+                                                      "version1"))
+
 
 class DatastoreVersionsTest(testtools.TestCase):
 
@@ -135,3 +156,47 @@ class DatastoreVersionsTest(testtools.TestCase):
                           'version'),
                          (self.datastore_versions.
                           get_by_uuid("datastore_version1")))
+
+    def test_create(self):
+        def side_effect_func(path, body, inst):
+            return path, body, inst
+
+        self.datastore_versions._create = mock.Mock(side_effect=
+                                                    side_effect_func)
+        body = {"version": {"name": "test_ver", "manager": "mysql",
+                            "image_id": "111", "packages": "packages",
+                            "active": False}}
+        self.assertEqual(('/mgmt/datastores/datastore1/versions', body,
+                          'version'),
+                         self.datastore_versions.create("datastore1",
+                                                        "test_ver", "mysql",
+                                                        "111", "packages",
+                                                        False))
+
+    def test_update(self):
+        def side_effect_func(path, body):
+            return body
+
+        body = {"version": {"name": "test_ver2", "packages": "packages list",
+                            "active": True}}
+        self.datastore_versions._update = mock.Mock(side_effect=
+                                                    side_effect_func)
+        self.datastore_versions.resource_class = mock.Mock(return_value=body)
+        self.assertEqual(body, self.datastore_versions.update("ds1", "ver1",
+                                                              "test_ver2",
+                                                              None, None,
+                                                              "packages list",
+                                                              True))
+
+    def test_update_by_uuid(self):
+        def side_effect_func(path, body):
+            return body
+
+        body = {"version": {"name": "test_ver2", "packages": "packages list",
+                            "active": True}}
+        self.datastore_versions._update = mock.Mock(side_effect=
+                                                    side_effect_func)
+        self.datastore_versions.resource_class = mock.Mock(return_value=body)
+        self.assertEqual(body, self.datastore_versions.update(
+            None, "617ec12e-3849-4469-9e2b-eadf9a076996", "test_ver2", None,
+            None, "", False))

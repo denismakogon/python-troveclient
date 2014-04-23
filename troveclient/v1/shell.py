@@ -955,3 +955,93 @@ def do_metadata_create(cs, args):
 def do_metadata_delete(cs, args):
     """Deletes metadata for instance <id>."""
     cs.metadata.delete(args.instance_id, args.key)
+
+
+@utils.arg('name', metavar='<name>',
+           help='Name of the datastore.')
+@utils.service_type('database')
+def do_datastore_create(cs, args):
+    """Create a datastore."""
+    datastore = cs.datastores.create(args.name)
+    _print_instance(datastore)
+
+
+@utils.arg('datastore', metavar='<datastore>',
+           help='ID or name of the datastore.')
+@utils.arg('--name', metavar='<name>',
+           default=None,
+           help='New name of the datastore.')
+@utils.arg('--datastore_version', metavar='<datastore_version>',
+           default=None,
+           help='ID or name of the datastore version.')
+@utils.service_type('database')
+def do_datastore_update(cs, args):
+    """Update a datastore."""
+    if not (args.name or args.datastore_version is not None):
+        raise exceptions.CommandError("Atleast one parameter "
+                                      "should be specified.")
+    datastore = cs.datastores.update(args.datastore, args.name,
+                                     args.datastore_version)
+    _print_instance(datastore)
+
+
+@utils.arg('name', metavar='<name>',
+           help='Name of the version.')
+@utils.arg('datastore', metavar='<datastore>',
+           help='ID or name of the datastore.')
+@utils.arg('manager', metavar='<manager>',
+           help='Manager of the version.')
+@utils.arg('image_id', metavar='<image_id>',
+           help='Image ID of the version.')
+@utils.arg('--packages', metavar='<packages>',
+           default=None,
+           help='Packages list of the version.')
+@utils.arg('--active', metavar='<active>',
+           default=None,
+           help='Availability of the version.')
+@utils.service_type('database')
+def do_datastore_version_create(cs, args):
+    """Create a datastore version."""
+    version = cs.datastore_versions.create(args.datastore, args.name,
+                                           args.manager, args.image_id,
+                                           args.packages, args.active)
+    _print_instance(version)
+
+
+@utils.arg('version', metavar='<version>',
+           help='ID or ame of the version.')
+@utils.arg('--datastore', metavar='<datastore>',
+           default=None,
+           help='ID or name of the datastore.')
+@utils.arg('--new_name', metavar='<new_name>',
+           default=None,
+           help='New name of the version.')
+@utils.arg('--manager', metavar='<manager>',
+           default=None,
+           help='Manager of the version.')
+@utils.arg('--image_id', metavar='<image_id>',
+           default=None,
+           help='Image ID of the version.')
+@utils.arg('--packages', metavar='<packages>',
+           default=None,
+           help='Packages list of the version.')
+@utils.arg('--active', metavar='<active>',
+           default=None,
+           help='Availability of the version.')
+@utils.service_type('database')
+def do_datastore_version_update(cs, args):
+    """Update a datastore version."""
+    if not (args.new_name or args.manager or args.image_id or
+            args.packages is not None or args.active is not None):
+        raise exceptions.CommandError("Atleast one parameter"
+                                      "should be specified.")
+    if args.datastore or utils.is_uuid_like(args.version):
+        version = cs.datastore_versions.update(args.version, args.datastore,
+                                               args.new_name, args.manager,
+                                               args.image_id, args.packages,
+                                               args.active)
+    else:
+        raise exceptions.NoUniqueMatch('The datastore name or id is required'
+                                       ' to retrieve a datastore version'
+                                       ' by name.')
+    _print_instance(version)
